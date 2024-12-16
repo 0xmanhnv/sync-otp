@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     env_file: 
       - .env
-    container_name: telegram_otp_bot
+    container_name: flask
     restart: always
     volumes:
       - ./logs:/app/logs # Mount thư mục logs từ host vào container
