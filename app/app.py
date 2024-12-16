@@ -128,6 +128,8 @@ def webhook():
                     send_message(chat_id, "Hết thời gian làm việc")
                 else:
                     send_message(chat_id, "Lệnh không hợp lệ. Sử dụng /open_time open/close")
+        elif text.startswith("/setwebhook") and data["message"]["chat"]["id"] == ADMIN_ID:
+            set_webhook()
         elif text.startswith("/help"):
             send_message(chat_id, "Sử dụng /otp <username> gửi OTP.")
         else:
@@ -138,6 +140,12 @@ def set_webhook():
     """
     Đặt webhook trên Telegram.
     """
+    # Đặt webhook
+    if not BOT_TOKEN or not NGROK_URL:
+        logging.error("TELEGRAM_BOT_TOKEN hoặc NGROK_URL chưa được cấu hình trong .env".encode("ascii", "ignore").decode("ascii"))
+        send_message(ADMIN_ID, "TELEGRAM_BOT_TOKEN hoặc NGROK_URL chưa được cấu hình trong .env")
+        exit(1)
+
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/setWebhook"
     webhook_url = f"{NGROK_URL}/nup4kachi/webhook"
     response = requests.post(url, json={"url": webhook_url})
@@ -146,14 +154,14 @@ def set_webhook():
     else:
         logging.error(f"Lỗi khi đặt webhook: {response.status_code}, {response.text}".encode("ascii", "ignore").decode("ascii"))
 
-if __name__ == "__main__":
-    # Đặt webhook
-    if not BOT_TOKEN or not NGROK_URL:
-        logging.error("TELEGRAM_BOT_TOKEN hoặc NGROK_URL chưa được cấu hình trong .env".encode("ascii", "ignore").decode("ascii"))
-        exit(1)
+# if __name__ == "__main__":
+#     # Đặt webhook
+#     if not BOT_TOKEN or not NGROK_URL:
+#         logging.error("TELEGRAM_BOT_TOKEN hoặc NGROK_URL chưa được cấu hình trong .env".encode("ascii", "ignore").decode("ascii"))
+#         exit(1)
 
-    set_webhook()
+#     set_webhook()
 
-    # Chạy Flask
-    logging.info(f"Chạy ứng dụng tại cổng {PORT}".encode("ascii", "ignore").decode("ascii"))
-    app.run(host="0.0.0.0", port=PORT)
+#     # Chạy Flask
+#     logging.info(f"Chạy ứng dụng tại cổng {PORT}".encode("ascii", "ignore").decode("ascii"))
+#     app.run(host="0.0.0.0", port=PORT)

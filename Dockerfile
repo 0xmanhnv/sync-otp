@@ -3,10 +3,18 @@ FROM python:3.10-slim
 
 # Copy toàn bộ code vào container
 WORKDIR /app
-COPY . /app
 
-# Cài đặt thư viện cần thiết
+# Copy file yêu cầu và source code
+COPY app/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
+COPY app/ .
+
+
+# Expose cổng 5000
+EXPOSE 5000
+
+# Chạy ứng dụng Flask qua Gunicorn
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
 
 # Chạy ứng dụng
-CMD ["python", "app.py"]
+# CMD ["python", "app.py"]
