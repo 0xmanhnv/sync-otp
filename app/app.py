@@ -128,8 +128,6 @@ def webhook():
                     send_message(chat_id, "Hết thời gian làm việc")
                 else:
                     send_message(chat_id, "Lệnh không hợp lệ. Sử dụng /open_time open/close")
-        elif text.startswith("/setwebhook") and data["message"]["chat"]["id"] == ADMIN_ID:
-            set_webhook()
         elif text.startswith("/help"):
             send_message(chat_id, "Sử dụng /otp <username> gửi OTP.")
         else:
@@ -154,6 +152,7 @@ def set_webhook():
     else:
         logging.error(f"Lỗi khi đặt webhook: {response.status_code}, {response.text}".encode("ascii", "ignore").decode("ascii"))
 
+set_webhook()
 # if __name__ == "__main__":
 #     # Đặt webhook
 #     if not BOT_TOKEN or not NGROK_URL:
