@@ -1,0 +1,7 @@
+.env
+bk.*
+main.py
+ok.py
+./logs/*
+./venv/*
+*.log
