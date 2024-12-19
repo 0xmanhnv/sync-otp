@@ -90,6 +90,8 @@ def webhook():
     data = request.get_json()
     logging.info(f"Nhận dữ liệu: {data}".encode("ascii", "ignore").decode("ascii"))
     global END_TIME
+    global WORKING_DAYS
+    global WORKING_HOURS
     if not is_working_hour() or END_TIME:
         args = text.split(" ")
         if len(args) < 2:
@@ -101,6 +103,7 @@ def webhook():
             WORKING_DAYS = range(0, 6)  # 0: Thứ Hai, 4: Thứ Sáu
             WORKING_HOURS = range(0, 23)  # 8 giờ đến 18 giờ
             send_message(chat_id, "Bot đã được mở full thời gian")
+            return jsonify({"ok": True})
         send_message(data["message"]["chat"]["id"], "Hết thời gian làm việc!!!")
         return jsonify({"ok": True})
 
