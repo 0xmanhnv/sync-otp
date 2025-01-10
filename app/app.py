@@ -101,6 +101,7 @@ def webhook():
         text = data["message"].get("text", "")
 
         if not is_working_hour() or END_TIME:
+            print("Hết thời gian làm việc")
             args = text.split(" ")
             if len(args) < 2:
                 send_message(chat_id, "Vui lòng nhập lệnh.")
