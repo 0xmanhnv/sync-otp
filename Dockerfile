@@ -8,6 +8,7 @@ WORKDIR /app
 COPY app/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ .
+COPY users.json /app/users.json
 
 
 # Expose cổng 5000
