@@ -103,6 +103,7 @@ def webhook():
 
         if END_TIME:
             print("Hết thời gian làm việc")
+            print(END_TIME)
             if text.startswith("/open_time") and data["message"]["chat"]["id"] == ADMIN_ID:
                 END_TIME=False
                 send_message(chat_id, "Bot đã được mở full thời gian")
