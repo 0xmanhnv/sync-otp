@@ -6,6 +6,7 @@ import pyotp
 import requests
 import sys
 import datetime
+import json
 
 
 # Load biến môi trường
@@ -13,18 +14,8 @@ load_dotenv()
 
 # Lấy thông tin từ .env
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-NGROK_URL = os.getenv("NGROK_URL")  # URL từ Ngrok
+API_URL = os.getenv("API_URL")  # URL từ Ngrok
 PORT = int(os.getenv("PORT", 8443))
-USERS = {
-    "vcs.anhnt" : os.getenv("USER_OTP_VCS_AHNT", ""),
-    "vcs.minhtn" : os.getenv("USER_OTP_VCS_MIHTN", ""),
-    "vcs.dainc" : os.getenv("USER_OTP_VCS_DANC", ""),
-    "vcs.ngandpx" : os.getenv("USER_OTP_VCS_NGNDPX", ""),
-    "vcs.haidv" : os.getenv("USER_OTP_VCS_HADV", ""),
-    "vcs.binhhh" : os.getenv("USER_OTP_VCS_BIHHH", ""),
-    "vcs.lamnc" : os.getenv("USER_OTP_VCS_LMNC", ""),
-    "vcs.datlq" : os.getenv("USER_OTP_VCS_DALQ", "")
-}
 
 # Cấu hình logging
 log_file_path = "./logs/app.log"
@@ -46,6 +37,10 @@ WORKING_HOURS = range(6, 19)  # 8 giờ đến 18 giờ
 END_TIME=False
 ADMIN_ID=833425787
 
+
+def read_json(file):
+    with open(file, 'r') as f:
+        return json.load(f)
 
 def is_working_hour():
     if END_TIME:
@@ -70,14 +65,20 @@ def send_message(chat_id, text):
     logging.info(f"Gửi tin nhắn: {response.status_code}, {response.text}".encode("ascii", "ignore").decode("ascii"))
 
 def get_otp(user):
+    # Find secret key in users.json with username
     """
     Lấy OTP cho user.
     """
-    key_otp = USERS.get(user, "")
+    users = read_json("users.json")
+    key_otp = users.get(user, "")
     if key_otp == "":
         logging.warning(f"Không tìm thấy OTP cho user: {user}".encode("ascii", "ignore").decode("ascii"))
         return "Không tìm thấy OTP"
-    totp = pyotp.TOTP(key_otp)
+
+    """
+    Lấy OTP cho user.
+    """
+    totp = pyotp.TOTP(key_otp.strip())
     otp = totp.now()
     logging.info(f"OTP của user {user}: {otp}".encode("ascii", "ignore").decode("ascii"))
     return otp
@@ -155,24 +156,25 @@ def set_webhook():
     Đặt webhook trên Telegram.
     """
     # Đặt webhook
-    if not BOT_TOKEN or not NGROK_URL:
-        logging.error("TELEGRAM_BOT_TOKEN hoặc NGROK_URL chưa được cấu hình trong .env".encode("ascii", "ignore").decode("ascii"))
-        send_message(ADMIN_ID, "TELEGRAM_BOT_TOKEN hoặc NGROK_URL chưa được cấu hình trong .env")
+    if not BOT_TOKEN or not API_URL:
+        logging.error("TELEGRAM_BOT_TOKEN hoặc API_URL chưa được cấu hình trong .env".encode("ascii", "ignore").decode("ascii"))
+        send_message(ADMIN_ID, "TELEGRAM_BOT_TOKEN hoặc API_URL chưa được cấu hình trong .env")
         exit(1)
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/setWebhook"
-    webhook_url = f"{NGROK_URL}/nup4kachi/webhook"
+    webhook_url = f"{API_URL}/nup4kachi/webhook"
     response = requests.post(url, json={"url": webhook_url})
     if response.status_code == 200:
         logging.info(f"Webhook đã được đặt tại: {webhook_url}".encode("ascii", "ignore").decode("ascii"))
     else:
         logging.error(f"Lỗi khi đặt webhook: {response.status_code}, {response.text}".encode("ascii", "ignore").decode("ascii"))
 
-set_webhook()
-# if __name__ == "__main__":
+# set_webhook()
+if __name__ == "__main__":
+    # print(read_json("users.json"))
 #     # Đặt webhook
-#     if not BOT_TOKEN or not NGROK_URL:
-#         logging.error("TELEGRAM_BOT_TOKEN hoặc NGROK_URL chưa được cấu hình trong .env".encode("ascii", "ignore").decode("ascii"))
+#     if not BOT_TOKEN or not API_URL:
+#         logging.error("TELEGRAM_BOT_TOKEN hoặc API_URL chưa được cấu hình trong .env".encode("ascii", "ignore").decode("ascii"))
 #         exit(1)
 
 #     set_webhook()
