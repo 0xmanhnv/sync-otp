@@ -95,22 +95,16 @@ def webhook():
     global END_TIME
     global WORKING_DAYS
     global WORKING_HOURS
+    global ADMIN_ID
 
     if "message" in data:
         chat_id = data["message"]["chat"]["id"]
         text = data["message"].get("text", "")
 
-        if not is_working_hour() or END_TIME:
+        if END_TIME:
             print("Hết thời gian làm việc")
-            args = text.split(" ")
-            if len(args) < 2:
-                send_message(chat_id, "Vui lòng nhập lệnh.")
-                return jsonify({"ok": True})
-            cmd = args[1]
-            if cmd == "open":
+            if text.startswith("/open_time") and data["message"]["chat"]["id"] == ADMIN_ID:
                 END_TIME=False
-                WORKING_DAYS = range(0, 6)  # 0: Thứ Hai, 4: Thứ Sáu
-                WORKING_HOURS = range(0, 23)  # 8 giờ đến 18 giờ
                 send_message(chat_id, "Bot đã được mở full thời gian")
                 return jsonify({"ok": True})
             send_message(data["message"]["chat"]["id"], "Hết thời gian làm việc!!!")
