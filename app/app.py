@@ -69,7 +69,7 @@ def get_otp(user):
     """
     Lấy OTP cho user.
     """
-    users = read_json("users.json")
+    users = read_json("/app/users.json")
     key_otp = users.get(user, "")
     if key_otp == "":
         logging.warning(f"Không tìm thấy OTP cho user: {user}".encode("ascii", "ignore").decode("ascii"))
