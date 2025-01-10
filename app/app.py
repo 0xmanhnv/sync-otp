@@ -170,7 +170,7 @@ def set_webhook():
         logging.error(f"Lỗi khi đặt webhook: {response.status_code}, {response.text}".encode("ascii", "ignore").decode("ascii"))
 
 # set_webhook()
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # print(read_json("users.json"))
 #     # Đặt webhook
 #     if not BOT_TOKEN or not API_URL:
