@@ -120,7 +120,12 @@ def webhook():
             else:
                 user = args[1]
                 otp = get_otp(user)
-                send_message(chat_id, f"Mã OTP của {user} là: {otp}")
+                template_msg = f"""Mã OTP của {user} là:
+                ```txt
+                {otp}
+                ```
+                """
+                send_message(chat_id, template_msg)
         elif text.startswith("/open_time") and data["message"]["chat"]["id"] == ADMIN_ID:
             args = text.split(" ")
             if len(args) < 2:
