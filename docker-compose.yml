@@ -9,6 +9,7 @@ services:
     restart: always
     volumes:
       - ./logs:/app/logs # Mount thư mục logs từ host vào container
+      - ./users.json:/app/users.json # Mount file users.json từ host vào container
     logging:
       driver: "json-file"
       options:
