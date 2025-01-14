@@ -65,7 +65,7 @@ def send_message(chat_id, text):
     payload = {
         "chat_id": chat_id,
         "text": escape_markdown_v2(text),
-        "parse_mode": "MarkdownV2",
+        "parse_mode": "HTML",
     }
     response = requests.post(url, json=payload)
     logging.info(f"Gửi tin nhắn: {response.status_code}, {response.text}".encode("ascii", "ignore").decode("ascii"))
@@ -126,7 +126,7 @@ def webhook():
             else:
                 user = args[1]
                 otp = get_otp(user)
-                template_msg = f"Mã OTP của {user} là:\n```txt\n{otp}\n```\n"
+                template_msg = f"Mã OTP của {user} là:<br><pre>{otp}</pre><br>"
                 send_message(chat_id, template_msg)
         elif text.startswith("/open_time") and data["message"]["chat"]["id"] == ADMIN_ID:
             args = text.split(" ")
