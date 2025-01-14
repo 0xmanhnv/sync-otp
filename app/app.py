@@ -64,7 +64,7 @@ def send_message(chat_id, text):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": chat_id,
-        "text": escape_markdown_v2(text),
+        "text": text,
         "parse_mode": "HTML",
     }
     response = requests.post(url, json=payload)
@@ -126,7 +126,7 @@ def webhook():
             else:
                 user = args[1]
                 otp = get_otp(user)
-                template_msg = f"Mã OTP của {user} là:{otp}"
+                template_msg = f"Mã OTP của {user} là:<br><pre>{otp}</pre><br>"
                 send_message(chat_id, template_msg)
         elif text.startswith("/open_time") and data["message"]["chat"]["id"] == ADMIN_ID:
             args = text.split(" ")
