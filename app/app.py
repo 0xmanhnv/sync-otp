@@ -60,7 +60,7 @@ def send_message(chat_id, text):
     payload = {
         "chat_id": chat_id,
         "text": text,
-        'parse_mode': 'MarkdownV2',
+        "parse_mode": "MarkdownV2",
     }
     response = requests.post(url, json=payload)
     logging.info(f"Gửi tin nhắn: {response.status_code}, {response.text}".encode("ascii", "ignore").decode("ascii"))
