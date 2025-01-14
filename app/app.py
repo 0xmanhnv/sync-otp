@@ -51,6 +51,11 @@ def is_working_hour():
         return True
     return False
 
+def escape_markdown_v2(text):
+    # Các ký tự cần thoát trong MarkdownV2
+    escape_chars = r'\_*[]()~`>#+-=|{}.!'
+    return ''.join(f'\\{char}' if char in escape_chars else char for char in text)
+
 
 def send_message(chat_id, text):
     """
@@ -59,7 +64,7 @@ def send_message(chat_id, text):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     payload = {
         "chat_id": chat_id,
-        "text": text,
+        "text": escape_markdown_v2(text),
         "parse_mode": "MarkdownV2",
     }
     response = requests.post(url, json=payload)
